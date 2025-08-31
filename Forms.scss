@@ -1,3 +1,8 @@
+$red-error: #ff4d4f; // example, replace with your color
+$gray-dark: #333;
+$gray-light: #666;
+$gray-lightest: #f8f8f8;
+
 .control-label {
   display: block;
 }
@@ -138,7 +143,7 @@
 
 .rides-filters__button {
   display: inline-block;
-  margin-left: - 8px;
+  margin-left: -8px; // removed extra space
 
   @media (max-width: 767px) {
     margin-left: 10px;

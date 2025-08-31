@@ -1,0 +1,198 @@
+.control-label {
+  display: block;
+}
+
+.react-datepicker__input-container {
+  width: 300px;
+}
+
+.form-control {
+  display: inline-block;
+  max-width: 300px;
+}
+
+.has-error .form-control {
+  border-color: $red-error;
+}
+
+.form-error {
+  margin-left: 10px;
+  color: $red-error;
+  display: inline-block;
+}
+
+.form-dropzone {
+  width: 100%;
+  max-width: 300px;
+  border-width: 2px;
+  border-color: $gray-dark;
+  border-style: dashed;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.cities-search-form {
+  background-color: $gray-lightest;
+  text-align: center;
+}
+
+.form-datepicker {
+  margin: 10px;
+  width: 100px;
+}
+
+.form-search {
+  margin: 0 10px;
+  height: 34px;
+  vertical-align: baseline;
+}
+
+.geosuggest__suggests {
+  max-width: 300px;
+}
+
+.rides-search {
+  display: inline-block;
+  width: calc(100% - 32px);
+
+  @media (max-width: 767px) {
+    margin-top: -15px;
+    margin-bottom: 10px;
+    width: calc(100% - 62px);
+  }
+
+  .geosuggest__wrapper {
+    display: inline-block;
+    width: calc(33% - 30px);
+    margin-right: 10px;
+    margin-bottom: 3px;
+    vertical-align: bottom;
+  }
+
+  .geosuggest {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .geosuggest__input-wrapper {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .date-input {
+    display: inline-block;
+    width: calc(33% - 23px);
+    height: 40px;
+    padding-right: 10px;
+    vertical-align: middle;
+
+    > div {
+      display: inline-block !important;
+      width: 100% !important;
+      height: 45px !important;
+
+      label {
+        top: 10px !important;
+      }
+
+      input {
+        margin-top: 2px !important;
+      }
+    }
+
+    @media (max-width: 1199px) {
+      width: calc(33% - 24px);
+    }
+  }
+
+  .form-submit {
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    > div {
+      display: block !important;
+      width: 100% !important;
+    }
+  }
+}
+
+.rides-filters {
+  display: inline-block;
+  width: 280px;
+  padding: 10px;
+
+  label {
+    font-size: 12px !important;
+  }
+
+  .select-input {
+    margin-top: -30px !important;
+  }
+
+  .form-submit {
+    margin: 0;
+  }
+}
+
+.rides-filters__button {
+  display: inline-block;
+  margin-left: - 8px;
+
+  @media (max-width: 767px) {
+    margin-left: 10px;
+    vertical-align: top;
+  }
+}
+
+.rides-filters__button button {
+  height: 40px !important;
+  width: 40px !important;
+  padding: 0 !important;
+  vertical-align: middle;
+}
+
+.text-input {
+  display: block !important;
+  width: 100% !important;
+}
+
+.select-input {
+  width: 100% !important;
+}
+
+.radio-input {
+  margin: 20px 0 -10px;
+
+  label {
+    display: block;
+  }
+}
+
+.date-input > div {
+  display: block !important;
+  width: 100% !important;
+}
+
+.file-input {
+  margin: 20px 0 -10px;
+
+  > div {
+    width: 100% !important;
+    max-width: 300px;
+    height: 65px !important;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+}
+
+.form-submit {
+  margin: 20px 0;
+}
+
+label {
+  display: block;
+  color: $gray-light;
+  font-size: 16px;
+}

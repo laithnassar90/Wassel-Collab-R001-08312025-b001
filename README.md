@@ -14,6 +14,3 @@ Run server:
 ```
 $ npm start/yarn start
 ```
-
-## Heroku
-[*blabla-clone-react*](https://blabla-clone-react.herokuapp.com)

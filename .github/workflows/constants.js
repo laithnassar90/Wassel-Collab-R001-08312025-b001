@@ -7,21 +7,23 @@ if (process.env.NODE_ENV === 'development') {
   ActionCableURL = 'wss://blabla-clone-api.herokuapp.com/cable'
 }
 
-export const APIEndpoints = {
-  USERS:         APIRoot + 'users',
-  CARS:          APIRoot + 'cars',
-  NOTIFICATIONS: APIRoot + 'notifications',
-  RIDES:         APIRoot + 'rides',
-  RIDE_REQUESTS: APIRoot + 'ride_requests',
-  SESSIONS:      APIRoot + 'sessions',
-  LOGIN_EMAIL:   APIRoot + 'sessions/login',
-  LOGIN_FB:      APIRoot + 'sessions/oath_login'
-};
+module.exports = {
+  APIRoot: APIRoot,
+  ActionCableURL: ActionCableURL,
+  APIEndpoints: {
+    USERS:         APIRoot + 'users',
+    CARS:          APIRoot + 'cars',
+    NOTIFICATIONS: APIRoot + 'notifications',
+    RIDES:         APIRoot + 'rides',
+    RIDE_REQUESTS: APIRoot + 'ride_requests',
+    SESSIONS:      APIRoot + 'sessions',
+    LOGIN_EMAIL:   APIRoot + 'sessions/login',
+    LOGIN_FB:      APIRoot + 'sessions/oath_login'
+  },
 
-export const Permissions = {
-  'USER': 'user',
-  'ADMIN': 'admin',
-  'PUBLIC': 'public'
+  Permissions: {
+    'USER': 'user',
+    'ADMIN': 'admin',
+    'PUBLIC': 'public'
+  }
 };
-
-export { APIRoot, ActionCableURL };

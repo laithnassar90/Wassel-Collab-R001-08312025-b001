@@ -1,11 +1,9 @@
-import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './index.css';
 
-// Import your reducers here
-// For now, creating a basic structure
-const rootReducer = combineReducers({
-  routing: routerReducer,
-  // Add other reducers as needed
-});
+const container = document.getElementById('root');
+const root = createRoot(container);
 
-export default rootReducer;
+root.render(<App />);

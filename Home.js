@@ -1,3 +1,7 @@
+// variables
+$gray-lightest: #f8f9fa;
+$black: #000000;
+
 body {
   font-family: 'Roboto', sans-serif;
   margin-top: 0;
@@ -7,7 +11,9 @@ body {
 a {
   color: $black;
 
-  &:hover, &:active, &:focus {
+  &:hover,
+  &:active,
+  &:focus {
     color: $black;
     text-decoration: none;
   }
@@ -19,7 +25,7 @@ a {
   padding-left: 0;
 
   @media (min-width: 992px) {
-    padding: auto 15px;
+    padding-right: 15px;
     padding-left: 275px;
   }
 }

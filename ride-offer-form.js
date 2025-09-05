@@ -18,6 +18,14 @@ export class RideOfferForm extends Component {
 
   renderRideOfferForm() {
     const { handleSubmit, currentUserId, ride } = this.props
+    
+    if (!currentUserId) {
+      return (
+        <div className='book-ride'>
+          Please log in to book a ride.
+        </div>
+      )
+    }
     let places = new Array(ride.free_places_count).fill(undefined).map((place, i) =>
       <MenuItem key={i} value={i + 1} primaryText={pluralize('place', i + 1, true)} />
     )

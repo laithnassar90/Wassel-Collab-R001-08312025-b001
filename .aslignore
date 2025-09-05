@@ -1,0 +1,6 @@
+.git/
+**/.git/
+**/COMMIT_EDITMSG
+COMMIT_EDITMSG
+public/.git/
+public/.git/**

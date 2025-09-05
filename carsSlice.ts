@@ -23,6 +23,9 @@ const initialState: CarsState = {
 
 export const fetchCars = createAsyncThunk('cars/fetchCars', async () => {
   const response = await fetch('/api/cars');
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   return response.json();
 });
 
@@ -43,6 +46,7 @@ const carsSlice = createSlice({
       .addCase(fetchCars.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Failed to fetch cars';
+        state.cars = [];
       });
   },
 });

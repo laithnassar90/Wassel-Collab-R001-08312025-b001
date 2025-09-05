@@ -1,44 +1,20 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function requireAuth(ChildComponent) {
-  class AuthenticatedComponent extends Component {
-    componentWillMount() {
-      this.checkAuth(this.props.isAuthenticated)
+const RequireAuth = ({ children }) => {
+  const isAuthenticated = useSelector(state => state.session?.isAuthenticated || false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const redirect = encodeURIComponent(location.pathname + location.search);
+      navigate(`/login?next=${redirect}`);
     }
+  }, [isAuthenticated, navigate, location]);
 
-    componentWillReceiveProps(nextProps) {
-      this.checkAuth(nextProps.isAuthenticated)
-    }
+  return isAuthenticated ? children : null;
+};
 
-    checkAuth(isAuthenticated) {
-      if (!isAuthenticated) this.props.authFailed()
-    }
-
-    render() {
-      return (
-        <div>
-         { this.props.isAuthenticated === true ? <ChildComponent { ...this.props } /> : null }
-        </div>
-      )
-    }
-  }
-
-  const mapStateToProps = (state) => ({
-    auth: state.session,
-    isAuthenticated: state.session.isAuthenticated,
-  })
-
-  const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-      authFailed: () => {
-        let location = ownProps.location
-        let redirect = encodeURIComponent(location.pathname + location.search)
-        dispatch(push(`/login?next=${redirect}`))
-      }
-    }
-  }
-
-  return connect(mapStateToProps, mapDispatchToProps)(AuthenticatedComponent)
-}
+export default RequireAuth;

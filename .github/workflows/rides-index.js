@@ -3,10 +3,8 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import ReactPaginate from 'react-paginate'
-import Button from 'react-bootstrap/lib/Button'
-import Row from 'react-bootstrap/lib/Row'
-import Col from 'react-bootstrap/lib/Col'
-import Chip from 'material-ui/Chip'
+import { Button, Row, Col } from 'react-bootstrap'
+import { Chip } from '@mui/material'
 import _ from 'lodash'
 
 // actions
@@ -194,7 +192,7 @@ export class RidesIndex extends Component {
         <div>
           <ReactPaginate previousLabel={"previous"}
             nextLabel={"next"}
-            breakLabel={<a href="">...</a>}
+            breakLabel={<span>...</span>}
             pageCount={pagination.total_pages}
             initialSelected={(query.page || 1) - 1}
             marginPagesDisplayed={2}

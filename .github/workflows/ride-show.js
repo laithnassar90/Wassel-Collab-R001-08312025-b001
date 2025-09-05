@@ -3,12 +3,11 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { Col } from 'react-bootstrap'
-import Time from 'react-time'
+import moment from 'moment'
 import Icon from 'react-fa'
 import pluralize from 'pluralize'
 import TimeAgo from 'react-timeago'
-import Paper from 'material-ui/Paper'
-import Avatar from 'material-ui/Avatar'
+import { Paper, Avatar } from '@mui/material'
 import _ from 'lodash'
 
 // actions
@@ -86,13 +85,13 @@ class RideShow extends Component {
         <div className='ride-show-description__details'>
           <div className='ride-show-description__details-label'>Date</div>
           <div className='ride-show-description__details-value'>
-            <Time value={ride.start_date || Date.now()} format="dddd D MMMM YYYY" />
+            {moment(ride.start_date || Date.now()).format('dddd D MMMM YYYY')}
           </div>
         </div>
         <div className='ride-show-description__details'>
           <div className='ride-show-description__details-label'>Time</div>
           <div className='ride-show-description__details-value'>
-            <Time value={ride.start_date || Date.now()} format="H:mm" />
+            {moment(ride.start_date || Date.now()).format('H:mm')}
           </div>
         </div>
         {this.renderRideDescriptionCar()}
@@ -246,7 +245,7 @@ class RideShow extends Component {
                 <div className='ride-show-driver__details-join'>
                   <div className='ride-show-driver__details-join-label'>joined:</div>
                   <div className='ride-show-driver__details-join-value'>
-                    <Time value={ride.driver.created_at || Date.now()} format="D MMMM YYYY" />
+                    {moment(ride.driver.created_at || Date.now()).format('D MMMM YYYY')}
                   </div>
                 </div>
               </div>

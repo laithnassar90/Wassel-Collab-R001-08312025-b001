@@ -2,127 +2,134 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_FAILURE,
+  USER_UPDATE_SUCCESS,
 } from '../constants/ActionTypes'
-import { APIEndpoints } from '../constants/constants'
-import {
-  loginFromCookie,
-  logInEmailBackend,
-  logInFbBackend,
-  logout,
-} from './session'
-import { itCallsApi, itIsAsyncAction } from 'test/helpers/redux-axios-middleware-helpers'
-import { itReturnsValidType, itReturnsValidObject } from 'test/helpers/action-helpers'
-import { User } from '../../test/support/fixtures'
+import { session, initialState } from './session'
+import { User, CurrentUser2 } from '../../test/support/fixtures'
 
-describe('actions session', () => {
-  const email = process.env.TEST_USER_EMAIL || 'test@example.com'
-  const access_token = process.env.TEST_ACCESS_TOKEN || 'test_token'
-  const dispatch = (x) => x
-  const getState = () => ({})
-
-  describe('loginFromCookie', () => {
-    const data = {
-      email,
-      access_token
-    }
-    const asyncAction = loginFromCookie(data)
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      url: `${APIEndpoints.SESSIONS}/get_user`,
-      headers: {
-        'X-User-Email': data.email,
-        'X-User-Token': data.access_token
-      }
+describe('reducers', () => {
+  it('handles LOGIN_REQUEST', () => {
+    const expected = {
+      ...state,
+      isStarted: true,
+      isFetching: true,
+      errors: [],
+      isAuthenticated: false,
+      id: undefined,
+      access_token: undefined,
+      email: undefined,
+      role: undefined
     }
 
-    itIsAsyncAction(action, [
-      LOGIN_REQUEST,
-      LOGIN_SUCCESS,
-      LOGIN_FAILURE
-    ])
+    const state = session({
+      ...initialState
+    }, {
+      type: LOGIN_REQUEST
+    })
 
-    itCallsApi(action, opts)
+    expect(state).to.deep.equal(expected)
   })
 
-  describe('logInEmailBackend', () => {
-    const password = process.env.TEST_PASSWORD || 'test_password'
-    const data = {
-      email,
-      password
-    }
-    const asyncAction = logInEmailBackend(data)
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      method: 'post',
-      url: APIEndpoints.LOGIN_EMAIL,
-      data: data
-    }
-
-    itIsAsyncAction(action, [
-      LOGIN_REQUEST,
-      LOGIN_SUCCESS,
-      LOGIN_FAILURE
-    ])
-
-    itCallsApi(action, opts)
-  })
-
-  describe('logInFbBackend', () => {
-    const uid = 'uid'
-    const provider = 'provider'
-    const first_name = 'first_name'
-    const last_name = 'last_name'
-    const data = {
-      id: uid,
-      email,
-      first_name,
-      last_name,
-    }
-    const asyncAction = logInFbBackend(data)
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      method: 'post',
-      url: APIEndpoints.LOGIN_FB,
+  it('handles LOGIN_SUCCESS', () => {
+    const payload = {
       data: {
-        uid: uid,
-        provider: 'facebook',
-        email: email,
-        first_name: first_name,
-        last_name: last_name
+        id: 1,
+        role: 'user',
+        access_token: process.env.TEST_ACCESS_TOKEN || 'test_token',
+        email: process.env.TEST_USER_EMAIL || 'test@example.com',
       }
     }
 
-    itIsAsyncAction(action, [
-      LOGIN_REQUEST,
-      LOGIN_SUCCESS,
-      LOGIN_FAILURE
-    ])
+    const expected = {
+      ...state,
+      isStarted: true,
+      isFetching: false,
+      errors: [],
+      isAuthenticated: true,
+      id: 1,
+      role: 'user',
+      access_token: 'access_token',
+      email: 'harry.potter@a.com',
+    }
 
-    itCallsApi(action, opts)
+    const state = session({
+      ...initialState,
+      isStarted: true,
+      isFetching: true,
+      errors: [],
+      isAuthenticated: false,
+      id: undefined,
+      access_token: undefined,
+      email: undefined,
+      role: undefined
+    }, {
+      type: LOGIN_SUCCESS,
+      payload: payload
+    })
   })
 
-  describe('logout', () => {
-    const asyncAction = logout()
-    const getState = () => ({ session: { email: email, access_token: access_token }})
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      method: 'delete',
-      url: APIEndpoints.SESSIONS,
-      headers: {
-        'X-User-Email': email,
-        'X-User-Token': access_token
+   it('handles LOGIN_FAILURE', () => {
+    const error = {
+      response : {
+        data: {
+          error: 'Invalid Email and/or Password.'
+        }
       }
     }
 
-    itIsAsyncAction(action, [
-      LOGOUT_REQUEST,
-      LOGOUT_SUCCESS,
-      LOGOUT_FAILURE
-    ])
+    const expected = {
+      ...state,
+      isStarted: true,
+      isFetching: false,
+      errors: [],
+      isAuthenticated: false,
+      id: 1,
+      role: 'user',
+      access_token: 'access_token',
+      email: 'harry.potter@a.com',
+    }
 
-    itCallsApi(action, opts)
+    const state = session({
+      ...initialState,
+      errors: ['Invalid Email and/or Password.'],
+    }, {
+      type: LOGIN_FAILURE,
+      error: error
+    })
   })
+
+  it('handles USER_UPDATE_SUCCESS', () => {
+    const payload = {
+      data: CurrentUser2(),
+    }
+
+    const expected = {
+      ...state,
+      isStarted: true,
+      isFetching: false,
+      errors: [],
+      isAuthenticated: true,
+      id: 1,
+      role: 'user',
+      access_token: process.env.TEST_ACCESS_TOKEN || 'test_token',
+      email: CurrentUser2().email,
+    }
+
+    const state = session({
+      ...initialState,
+      isStarted: true,
+      isFetching: false,
+      errors: [],
+      isAuthenticated: false,
+      id: 1,
+      role: 'user',
+      access_token: process.env.TEST_ACCESS_TOKEN || 'test_token',
+      email: process.env.TEST_USER_EMAIL || 'test@example.com'
+    }, {
+      type: USER_UPDATE_SUCCESS,
+      payload: payload
+    })
+  })
+
 })

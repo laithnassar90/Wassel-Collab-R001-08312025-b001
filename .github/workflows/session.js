@@ -2,83 +2,63 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  LOGOUT_FAILURE,
+  CURRENT_USER_UPDATE_SUCCESS,
 } from '../constants/ActionTypes'
-import { APIEndpoints } from '../constants/constants'
 
-export function loginFromCookie(data) {
-  return {
-    types: [
-      LOGIN_REQUEST,
-      LOGIN_SUCCESS,
-      LOGIN_FAILURE
-    ],
-    payload: {
-      request: {
-        url: `${APIEndpoints.SESSIONS}/get_user`,
-        headers: {
-          'X-User-Email': data.email,
-          'X-User-Token': data.access_token
-        }
-      }
-    }
-  }
+export const initialState = {
+  isStarted: false,
+  isFetching: false,
+  errors: [],
+  isAuthenticated: false,
+  id: undefined,
+  access_token: undefined,
+  email: undefined,
+  role: undefined
 }
 
-export function logInEmailBackend(data) {
-  return {
-    types: [
-      LOGIN_REQUEST,
-      LOGIN_SUCCESS,
-      LOGIN_FAILURE
-    ],
-    payload: {
-      request: {
-        method: 'post',
-        url: APIEndpoints.LOGIN_EMAIL,
-        data: data
-      }
-    }
-  }
-}
-
-export function logInFbBackend(data) {
-  return {
-    types: [
-      LOGIN_REQUEST,
-      LOGIN_SUCCESS,
-      LOGIN_FAILURE
-    ],
-    payload: {
-      request: {
-        method: 'post',
-        url: APIEndpoints.LOGIN_FB,
-        data: {
-          uid: data.id,
-          provider: 'facebook',
-          email: data.email,
-          first_name: data.first_name,
-          last_name: data.last_name
-        }
-      }
-    }
-  }
-}
-
-export function logout() {
-  return {
-    types: [
-      LOGOUT_REQUEST,
-      LOGOUT_SUCCESS,
-      LOGOUT_FAILURE
-    ],
-    payload: {
-      request: {
-        method: 'delete',
-        url: APIEndpoints.SESSIONS,
-      }
-    }
+export function session(state = initialState, action) {
+  let item, errors
+  switch (action.type) {
+  case LOGIN_REQUEST:
+    return {
+      ...state,
+      isStarted: true,
+      isFetching: true,
+    };
+  case LOGIN_SUCCESS:
+    item = action.payload.data
+    return {
+      ...state,
+      errors: [],
+      isFetching: false,
+      isAuthenticated: true,
+      ...item
+    };
+  case LOGIN_FAILURE:
+    errors = action.error.response.data.error
+    return {
+      ...initialState,
+      errors: [errors],
+    };
+  case LOGOUT_SUCCESS:
+    return {
+      ...state,
+      errors: [],
+      isFetching: false,
+      isAuthenticated: false,
+      ...initialState
+    };
+  case CURRENT_USER_UPDATE_SUCCESS:
+    item = action.payload.data
+    return {
+      ...state,
+      errors: [],
+      isFetching: false,
+      isAuthenticated: true,
+      email: item.email
+    };
+  default:
+    return state;
   }
 }

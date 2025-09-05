@@ -1,181 +1,53 @@
 import {
   USERS_FETCH_REQUEST,
   USERS_FETCH_SUCCESS,
-  USERS_FETCH_FAILURE,
-  USER_FETCH_REQUEST,
-  USER_FETCH_SUCCESS,
-  USER_FETCH_FAILURE,
-  CURRENT_USER_FETCH_REQUEST,
-  CURRENT_USER_FETCH_SUCCESS,
-  CURRENT_USER_FETCH_FAILURE,
-  CURRENT_USER_CREATE_REQUEST,
-  CURRENT_USER_CREATE_SUCCESS,
-  CURRENT_USER_CREATE_FAILURE,
-  CURRENT_USER_UPDATE_REQUEST,
-  CURRENT_USER_UPDATE_SUCCESS,
-  CURRENT_USER_UPDATE_FAILURE,
 } from '../constants/ActionTypes'
-import { APIEndpoints } from '../constants/constants'
-import {
-  fetchUsers,
-  fetchUser,
-  fetchCurrentUser,
-  createUser,
-  updateCurrentUser,
-  checkUserEmailUniqueness
-} from './users'
-import { itCallsApi, itIsAsyncAction } from 'test/helpers/redux-axios-middleware-helpers'
-import { User } from '../../test/support/fixtures'
+import { users, initialState } from './users'
+import { User, Pagination } from '../../test/support/fixtures'
 
-describe('actions users', () => {
-  const id = process.env.TEST_USER_ID || 1
-  const email = process.env.TEST_USER_EMAIL || 'test@example.com'
-  const access_token = process.env.TEST_ACCESS_TOKEN || 'test_token'
-  const dispatch = (x) => x
-  const getState = () => ({ session: { id: id, email: email, access_token: access_token }})
+describe('reducers', () => {
+  it('handles USERS_FETCH_REQUEST', () => {
+    const expected = {
+      ...state,
+      isStarted: true,
+      isFetching: true,
+      items: [],
+      pagination: {}
+    }
 
-  describe('fetchUsers', () => {
-    describe('with no params', () => {
-      const asyncAction = fetchUsers()
-      const action = asyncAction(dispatch, getState)
-      const opts = {
-        url: APIEndpoints.USERS,
-        headers: {
-          'X-User-Email': email,
-          'X-User-Token': access_token
-        },
-        params: {
-          page: 1,
-          per: 10
-        }
-      }
-
-      itIsAsyncAction(action, [
-        USERS_FETCH_REQUEST,
-        USERS_FETCH_SUCCESS,
-        USERS_FETCH_FAILURE,
-      ])
-
-      itCallsApi(action, opts)
+    const state = users({
+      ...initialState
+    }, {
+      type: USERS_FETCH_REQUEST
     })
 
-    describe('with page and per params', () => {
-      const page = 2
-      const per = 20
-      const asyncAction = fetchUsers(page, per)
-      const action = asyncAction(dispatch, getState)
-      const opts = {
-        url: APIEndpoints.USERS,
-        headers: {
-          'X-User-Email': email,
-          'X-User-Token': access_token
-        },
-        params: {
-          page,
-          per
-        }
+    expect(state).to.deep.equal(expected)
+  })
+
+  it('handles USERS_FETCH_SUCCESS', () => {
+    const payload = {
+      data: {
+        items: [User()],
+        meta: Pagination()
       }
+    }
+    const expected = {
+      ...state,
+      isStarted: true,
+      isFetching: false,
+      items: [User()],
+      pagination: Pagination()
+    }
 
-      itIsAsyncAction(action, [
-        USERS_FETCH_REQUEST,
-        USERS_FETCH_SUCCESS,
-        USERS_FETCH_FAILURE
-      ])
-
-      itCallsApi(action, opts)
+    const state = users({
+      ...initialState,
+      isStarted: true,
+      isFetching: true,
+      items: [],
+      pagination: {}
+    }, {
+      type: USERS_FETCH_SUCCESS,
+      payload: payload
     })
-  })
-
-  describe('fetchUser', () => {
-    const userId = 1
-    const asyncAction = fetchUser(userId)
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      url: `${APIEndpoints.USERS}/${userId}`,
-      headers: {
-        'X-User-Email': email,
-        'X-User-Token': access_token
-      }
-    }
-
-    itIsAsyncAction(action, [
-      USER_FETCH_REQUEST,
-      USER_FETCH_SUCCESS,
-      USER_FETCH_FAILURE
-    ])
-
-    itCallsApi(action, opts)
-  })
-
-  describe('fetchCurrentUser', () => {
-    const asyncAction = fetchCurrentUser()
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      url: `${APIEndpoints.USERS}/${id}/profile`,
-      headers: {
-        'X-User-Email': email,
-        'X-User-Token': access_token
-      }
-    }
-
-    itIsAsyncAction(action, [
-      CURRENT_USER_FETCH_REQUEST,
-      CURRENT_USER_FETCH_SUCCESS,
-      CURRENT_USER_FETCH_FAILURE
-    ])
-
-    itCallsApi(action, opts)
-  })
-
-  describe('createUser', () => {
-    const body = {
-      data: 'data'
-    }
-    const asyncAction = createUser(body)
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      method: 'post',
-      url: APIEndpoints.USERS,
-      headers: {
-        'X-User-Email': email,
-        'X-User-Token': access_token
-      },
-      data: body,
-      simple: false
-    }
-
-    itIsAsyncAction(action, [
-      CURRENT_USER_CREATE_REQUEST,
-      CURRENT_USER_CREATE_SUCCESS,
-      CURRENT_USER_CREATE_FAILURE
-    ])
-
-    itCallsApi(action, opts)
-  })
-
-  describe('updateCurrentUser', () => {
-    const body = {
-      data: 'data'
-    }
-    const asyncAction = updateCurrentUser(body)
-    const action = asyncAction(dispatch, getState)
-    const opts = {
-      method: 'put',
-      url: `${APIEndpoints.USERS}/${id}`,
-      headers: {
-        'X-User-Email': email,
-        'X-User-Token': access_token
-      },
-      data: body,
-      simple: false
-    }
-
-    itIsAsyncAction(action, [
-      CURRENT_USER_UPDATE_REQUEST,
-      CURRENT_USER_UPDATE_SUCCESS,
-      CURRENT_USER_UPDATE_FAILURE
-    ])
-
-    itCallsApi(action, opts)
   })
 })

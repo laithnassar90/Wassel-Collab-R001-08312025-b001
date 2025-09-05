@@ -1,21 +1,16 @@
-// copied from https://github.com/erikras/redux-form-material-ui
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import App from './App';
+import { store, persistor } from './store/configureStore';
 
-import RadioButtonGroup from './RadioButtonGroup'
-import TextField from './TextField'
-import DatePicker from './DatePicker'
-import Checkbox from './Checkbox'
-import Slider from './Slider'
-import Toggle from './Toggle'
-import SelectField from './SelectField'
-import AutoComplete from './AutoComplete'
-
-export {
-  AutoComplete,
-  Checkbox,
-  DatePicker,
-  RadioButtonGroup,
-  SelectField,
-  Slider,
-  TextField,
-  Toggle
-}
+ReactDOM.render(
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>,
+  document.getElementById('root')
+);

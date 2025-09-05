@@ -32,12 +32,15 @@ export const loginUser = createAsyncThunk(
       });
       
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.message || `Login failed: ${response.status} ${response.statusText}`;
+        throw new Error(errorMessage);
       }
       
       const data = await response.json();
       return data;
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     }
   }

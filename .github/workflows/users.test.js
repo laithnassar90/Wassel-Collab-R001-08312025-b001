@@ -1,61 +1,59 @@
 import {
-  CAR_INITIALIZE,
-  CARS_FETCH_REQUEST,
-  CARS_FETCH_SUCCESS,
-  CARS_FETCH_FAILURE,
-  CAR_FETCH_REQUEST,
-  CAR_FETCH_SUCCESS,
-  CAR_FETCH_FAILURE,
-  CAR_OPTIONS_FETCH_REQUEST,
-  CAR_OPTIONS_FETCH_SUCCESS,
-  CAR_OPTIONS_FETCH_FAILURE,
-  CAR_CREATE_REQUEST,
-  CAR_CREATE_SUCCESS,
-  CAR_CREATE_FAILURE,
-  CAR_UPDATE_REQUEST,
-  CAR_UPDATE_SUCCESS,
-  CAR_UPDATE_FAILURE,
+  USERS_FETCH_REQUEST,
+  USERS_FETCH_SUCCESS,
+  USERS_FETCH_FAILURE,
+  USER_FETCH_REQUEST,
+  USER_FETCH_SUCCESS,
+  USER_FETCH_FAILURE,
+  CURRENT_USER_FETCH_REQUEST,
+  CURRENT_USER_FETCH_SUCCESS,
+  CURRENT_USER_FETCH_FAILURE,
+  CURRENT_USER_CREATE_REQUEST,
+  CURRENT_USER_CREATE_SUCCESS,
+  CURRENT_USER_CREATE_FAILURE,
+  CURRENT_USER_UPDATE_REQUEST,
+  CURRENT_USER_UPDATE_SUCCESS,
+  CURRENT_USER_UPDATE_FAILURE,
 } from '../constants/ActionTypes'
 import { APIEndpoints } from '../constants/constants'
 import {
-  fetchCars,
-  fetchCar,
-  fetchCarsOptions,
-  createCar,
-  updateCar,
-  initializeCar,
-} from './cars'
+  fetchUsers,
+  fetchUser,
+  fetchCurrentUser,
+  createUser,
+  updateCurrentUser,
+  checkUserEmailUniqueness
+} from './users'
 import { itCallsApi, itIsAsyncAction } from 'test/helpers/redux-axios-middleware-helpers'
-import { itReturnsValidType, itReturnsValidObject } from 'test/helpers/action-helpers'
+import { User } from '../../test/support/fixtures'
 
-describe('actions cars', () => {
+describe('actions users', () => {
+  const id = process.env.TEST_USER_ID || 1
   const email = process.env.TEST_USER_EMAIL || 'test@example.com'
   const access_token = process.env.TEST_ACCESS_TOKEN || 'test_token'
   const dispatch = (x) => x
-  const getState = () => ({ session: { email: email, access_token: access_token }})
+  const getState = () => ({ session: { id: id, email: email, access_token: access_token }})
 
-  describe('fetchCars', () => {
-    const userId = 1
-
+  describe('fetchUsers', () => {
     describe('with no params', () => {
-      const asyncAction = fetchCars(userId)
+      const asyncAction = fetchUsers()
       const action = asyncAction(dispatch, getState)
       const opts = {
-        url: `${APIEndpoints.USERS}/${userId}/cars`,
+        url: APIEndpoints.USERS,
         headers: {
           'X-User-Email': email,
           'X-User-Token': access_token
         },
         params: {
           page: 1,
-          per: 10,
+          per: 10
         }
       }
 
       itIsAsyncAction(action, [
-        CARS_FETCH_REQUEST,
-        CARS_FETCH_SUCCESS,
-        CARS_FETCH_FAILURE
+        USERS_FETCH_REQUEST,
+        USERS_FETCH_SUCCESS,
+        USERS_FETCH_FAILURE,
       ])
 
       itCallsApi(action, opts)
@@ -64,36 +62,36 @@ describe('actions cars', () => {
     describe('with page and per params', () => {
       const page = 2
       const per = 20
-      const asyncAction = fetchCars(userId, page, per)
+      const asyncAction = fetchUsers(page, per)
       const action = asyncAction(dispatch, getState)
       const opts = {
-        url: `${APIEndpoints.USERS}/${userId}/cars`,
+        url: APIEndpoints.USERS,
         headers: {
           'X-User-Email': email,
           'X-User-Token': access_token
         },
         params: {
-          page: 2,
-          per: 20
+          page,
+          per
         }
       }
 
       itIsAsyncAction(action, [
-        CARS_FETCH_REQUEST,
-        CARS_FETCH_SUCCESS,
-        CARS_FETCH_FAILURE
+        USERS_FETCH_REQUEST,
+        USERS_FETCH_SUCCESS,
+        USERS_FETCH_FAILURE
       ])
 
       itCallsApi(action, opts)
     })
   })
 
-  describe('fetchCar', () => {
-    const carId = 1
-    const asyncAction = fetchCar(carId)
+  describe('fetchUser', () => {
+    const userId = 1
+    const asyncAction = fetchUser(userId)
     const action = asyncAction(dispatch, getState)
     const opts = {
-      url: `${APIEndpoints.CARS}/${carId}`,
+      url: `${APIEndpoints.USERS}/${userId}`,
       headers: {
         'X-User-Email': email,
         'X-User-Token': access_token
@@ -101,19 +99,19 @@ describe('actions cars', () => {
     }
 
     itIsAsyncAction(action, [
-      CAR_FETCH_REQUEST,
-      CAR_FETCH_SUCCESS,
-      CAR_FETCH_FAILURE
+      USER_FETCH_REQUEST,
+      USER_FETCH_SUCCESS,
+      USER_FETCH_FAILURE
     ])
 
     itCallsApi(action, opts)
   })
 
-  describe('fetchCarsOptions', () => {
-    const asyncAction = fetchCarsOptions()
+  describe('fetchCurrentUser', () => {
+    const asyncAction = fetchCurrentUser()
     const action = asyncAction(dispatch, getState)
     const opts = {
-      url: `${APIEndpoints.CARS}/options`,
+      url: `${APIEndpoints.USERS}/${id}/profile`,
       headers: {
         'X-User-Email': email,
         'X-User-Token': access_token
@@ -121,23 +119,23 @@ describe('actions cars', () => {
     }
 
     itIsAsyncAction(action, [
-      CAR_OPTIONS_FETCH_REQUEST,
-      CAR_OPTIONS_FETCH_SUCCESS,
-      CAR_OPTIONS_FETCH_FAILURE
+      CURRENT_USER_FETCH_REQUEST,
+      CURRENT_USER_FETCH_SUCCESS,
+      CURRENT_USER_FETCH_FAILURE
     ])
 
     itCallsApi(action, opts)
   })
 
-  describe('createCar', () => {
+  describe('createUser', () => {
     const body = {
       data: 'data'
     }
-    const asyncAction = createCar(body)
+    const asyncAction = createUser(body)
     const action = asyncAction(dispatch, getState)
     const opts = {
       method: 'post',
-      url: APIEndpoints.CARS,
+      url: APIEndpoints.USERS,
       headers: {
         'X-User-Email': email,
         'X-User-Token': access_token
@@ -147,24 +145,23 @@ describe('actions cars', () => {
     }
 
     itIsAsyncAction(action, [
-      CAR_CREATE_REQUEST,
-      CAR_CREATE_SUCCESS,
-      CAR_CREATE_FAILURE
+      CURRENT_USER_CREATE_REQUEST,
+      CURRENT_USER_CREATE_SUCCESS,
+      CURRENT_USER_CREATE_FAILURE
     ])
 
     itCallsApi(action, opts)
   })
 
-  describe('updateCar', () => {
-    const carId = 1
+  describe('updateCurrentUser', () => {
     const body = {
       data: 'data'
     }
-    const asyncAction = updateCar(body, carId)
+    const asyncAction = updateCurrentUser(body)
     const action = asyncAction(dispatch, getState)
     const opts = {
       method: 'put',
-      url: `${APIEndpoints.CARS}/${carId}`,
+      url: `${APIEndpoints.USERS}/${id}`,
       headers: {
         'X-User-Email': email,
         'X-User-Token': access_token
@@ -174,17 +171,11 @@ describe('actions cars', () => {
     }
 
     itIsAsyncAction(action, [
-      CAR_UPDATE_REQUEST,
-      CAR_UPDATE_SUCCESS,
-      CAR_UPDATE_FAILURE
+      CURRENT_USER_UPDATE_REQUEST,
+      CURRENT_USER_UPDATE_SUCCESS,
+      CURRENT_USER_UPDATE_FAILURE
     ])
 
     itCallsApi(action, opts)
-  })
-
-  describe('initializeCar', () => {
-    const action = initializeCar()
-
-    itReturnsValidType(action, CAR_INITIALIZE)
   })
 })

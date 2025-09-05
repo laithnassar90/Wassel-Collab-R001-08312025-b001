@@ -51,9 +51,7 @@ export default function AppNavDrawer(props) {
   const [openAccount, setOpenAccount] = useState(false);
 
   const location = useLocation();
-
   const toggle = (setter, current) => () => setter(!current);
-
   const isSelected = (path) => location.pathname === path;
 
   const handleHeaderClick = () => {
@@ -76,20 +74,14 @@ export default function AppNavDrawer(props) {
             display: 'flex',
             alignItems: 'center',
             gap: 1.5,
-            textDecoration: 'none',
           }}
         >
           <Link
             to={`/users/${currentUser.id}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-              color: 'inherit',
-            }}
+            style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}
           >
-            <Avatar src={currentUser.avatar} sx={{ width: 32, height: 32, marginRight: 1.5 }} />
-            <span>{currentUser.full_name}</span>
+            <Avatar src={currentUser.avatar} sx={{ width: 32, height: 32, mr: 1.5 }} />
+            <span>{currentUser.full_name ? String(currentUser.full_name).replace(/[<>"'&]/g, (match) => ({'<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '&': '&amp;'}[match])) : ''}</span>
           </Link>
         </Box>
       );
@@ -118,7 +110,7 @@ export default function AppNavDrawer(props) {
     if (isAuthenticated) {
       return (
         <>
-          <ListItem button onClick={toggle(setOpenAccount, openAccount)}>
+          <ListItem button onClick={toggle(setOpenAccount, openAccount)} sx={{ display: isAuthenticated ? 'flex' : 'none' }}>
             <ListItemText primary="My account" />
             {openAccount ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
@@ -130,7 +122,7 @@ export default function AppNavDrawer(props) {
                 component={Link}
                 to="/account/user"
                 selected={isSelected('/account/user')}
-                onClick={() => onChangeList && onChangeList(null, '/account/user')}
+                onClick={() => onChangeList?.(null, '/account/user')}
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon><AccountBoxIcon /></ListItemIcon>
@@ -142,7 +134,7 @@ export default function AppNavDrawer(props) {
                 component={Link}
                 to="/account/cars"
                 selected={isSelected('/account/cars')}
-                onClick={() => onChangeList && onChangeList(null, '/account/cars')}
+                onClick={() => onChangeList?.(null, '/account/cars')}
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon><DirectionsCarIcon /></ListItemIcon>
@@ -154,7 +146,7 @@ export default function AppNavDrawer(props) {
                 component={Link}
                 to="/account/rides_as_driver"
                 selected={isSelected('/account/rides_as_driver')}
-                onClick={() => onChangeList && onChangeList(null, '/account/rides_as_driver')}
+                onClick={() => onChangeList?.(null, '/account/rides_as_driver')}
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon><DriverIcon /></ListItemIcon>
@@ -166,7 +158,7 @@ export default function AppNavDrawer(props) {
                 component={Link}
                 to="/account/rides_as_passenger"
                 selected={isSelected('/account/rides_as_passenger')}
-                onClick={() => onChangeList && onChangeList(null, '/account/rides_as_passenger')}
+                onClick={() => onChangeList?.(null, '/account/rides_as_passenger')}
                 sx={{ pl: 4 }}
               >
                 <ListItemIcon><PassengerIcon /></ListItemIcon>
@@ -192,7 +184,7 @@ export default function AppNavDrawer(props) {
           component={Link}
           to="/login"
           selected={isSelected('/login')}
-          onClick={() => onChangeList && onChangeList(null, '/login')}
+          onClick={() => onChangeList?.(null, '/login')}
         >
           <ListItemText primary="Login" />
         </ListItem>
@@ -202,7 +194,7 @@ export default function AppNavDrawer(props) {
           component={Link}
           to="/register"
           selected={isSelected('/register')}
-          onClick={() => onChangeList && onChangeList(null, '/register')}
+          onClick={() => onChangeList?.(null, '/register')}
         >
           <ListItemText primary="Register" />
         </ListItem>
@@ -214,7 +206,7 @@ export default function AppNavDrawer(props) {
     <Drawer
       variant={docked ? 'permanent' : 'temporary'}
       open={open}
-      onClose={() => onRequestChangeNavDrawer && onRequestChangeNavDrawer(false)}
+      onClose={() => onRequestChangeNavDrawer?.(false)}
       sx={{
         width: drawerWidth,
         flexShrink: 0,
@@ -228,7 +220,6 @@ export default function AppNavDrawer(props) {
       {renderLeftHeader()}
 
       <List component="nav" aria-label="main navigation">
-        {/* Rides */}
         <ListItem button onClick={toggle(setOpenRides, openRides)}>
           <ListItemText primary="Rides" />
           {openRides ? <ExpandLess /> : <ExpandMore />}
@@ -241,7 +232,7 @@ export default function AppNavDrawer(props) {
               component={Link}
               to="/rides/new"
               selected={isSelected('/rides/new')}
-              onClick={() => onChangeList && onChangeList(null, '/rides/new')}
+              onClick={() => onChangeList?.(null, '/rides/new')}
               sx={{ pl: 4 }}
             >
               <ListItemIcon><AddBoxIcon /></ListItemIcon>
@@ -253,7 +244,7 @@ export default function AppNavDrawer(props) {
               component={Link}
               to="/rides"
               selected={isSelected('/rides')}
-              onClick={() => onChangeList && onChangeList(null, '/rides')}
+              onClick={() => onChangeList?.(null, '/rides')}
               sx={{ pl: 4 }}
             >
               <ListItemIcon><SearchIcon /></ListItemIcon>
@@ -262,7 +253,6 @@ export default function AppNavDrawer(props) {
           </List>
         </Collapse>
 
-        {/* Users */}
         <ListItem button onClick={toggle(setOpenUsers, openUsers)}>
           <ListItemText primary="Users" />
           {openUsers ? <ExpandLess /> : <ExpandMore />}
@@ -275,7 +265,7 @@ export default function AppNavDrawer(props) {
               component={Link}
               to="/users"
               selected={isSelected('/users')}
-              onClick={() => onChangeList && onChangeList(null, '/users')}
+              onClick={() => onChangeList?.(null, '/users')}
               sx={{ pl: 4 }}
             >
               <ListItemIcon><GroupIcon /></ListItemIcon>
@@ -284,7 +274,6 @@ export default function AppNavDrawer(props) {
           </List>
         </Collapse>
 
-        {/* Account */}
         {renderAccountSection()}
       </List>
     </Drawer>
@@ -306,4 +295,10 @@ AppNavDrawer.propTypes = {
     avatar: PropTypes.string,
     full_name: PropTypes.string,
   }),
+};
+
+AppNavDrawer.defaultProps = {
+  style: {},
+  isAuthenticated: false,
+  currentUser: null,
 };

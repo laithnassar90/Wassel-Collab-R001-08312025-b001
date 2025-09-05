@@ -1,7 +1,7 @@
 // utils
 import React, { Component, PropTypes }  from 'react'
 import { Link } from 'react-router'
-import Timestamp from 'react-time'
+import moment from 'moment'
 import Icon from 'react-fa'
 import pluralize from 'pluralize'
 import classNames from 'classnames'
@@ -27,7 +27,7 @@ export class RidesIndexItem extends Component {
     rideDescription =
       <div className='ride-description'>
         <div className='ride-description__start_date'>
-          <Timestamp value={ride.start_date} format="dddd DD MMMM - HH:mm" />
+          {moment(ride.start_date).format('dddd DD MMMM - HH:mm')}
         </div>
         <div className='ride-description__start-city'>{ride.start_location.address}</div>
         <Icon name="long-arrow-right" className='ride-description__arrow'/>
